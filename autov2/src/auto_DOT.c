@@ -102,7 +102,8 @@ void DOTaut(aut_t *paut)  {
 		for (i=0; i<AUT_ALPHABET_SIZE; i++) {
 			if ( branch(paut,j,i) !=0 && branch(paut,j,i) < paut->nb_states ) {
 				printf("   Q%d -> Q%d [ color=red, fontcolor=red, label = \"", j, branch(paut,j,i));
-				makeCharacterListWithSameAction(paut,alreadyPrinted, i, j, 0);
+				//makeCharacterListWithSameAction(paut,alreadyPrinted, i, j, 0);
+				printCharacter(i) ;
 				printf("\"];\n");
 			}
 		}

@@ -39,22 +39,22 @@ typedef struct {
 } COMMAND;
 
 COMMAND commands[] = {
-  { "cd", com_cd, "Change to directory DIR" },
-  { "load", com_load_automate_from_file, "Load Automate from file" },
-  { "loadFile", com_load_automate_from_file, "Synonym for `load'" },
-  { "gDOT", com_automate_DOT, "Show Automate DOT graph" },
-  { "getDOT", com_automate_DOT, "Synonym for `gDOT'" },
-  { "chk", com_automate_isword, "Check string to automate" },
-  { "check", com_automate_isword, "Synonym for `chk'" },
-  { "help", com_help, "Display this text" },
-  { "?", com_help, "Synonym for `help'" },
-  { "list", com_list, "List files in DIR" },
-  { "ls", com_list, "Synonym for `list'" },
-  { "pwd", com_pwd, "Print the current working directory" },
-  { "quit", com_quit, "Quit using LR1" },
-  { "rename", com_rename, "Rename FILE to NEWNAME" },
-  { "stat", com_stat, "Print out statistics on FILE" },
-  { "view", com_view, "View the contents of FILE" },
+  { "!cd", com_cd, "Change to directory DIR" },
+  { "!load", com_load_automate_from_file, "Load Automate from file" },
+  { "!loadFile", com_load_automate_from_file, "Synonym for `load'" },
+  { "!gDOT", com_automate_DOT, "Show Automate DOT graph" },
+  { "!getDOT", com_automate_DOT, "Synonym for `gDOT'" },
+  { "!chk", com_automate_isword, "Check string to automate" },
+  { "!check", com_automate_isword, "Synonym for `chk'" },
+  { "!help", com_help, "Display this text" },
+  { "!?", com_help, "Synonym for `help'" },
+  { "!list", com_list, "List files in DIR" },
+  { "!ls", com_list, "Synonym for `list'" },
+  { "!pwd", com_pwd, "Print the current working directory" },
+  { "!quit", com_quit, "Quit using LR1" },
+  { "!rename", com_rename, "Rename FILE to NEWNAME" },
+  { "!stat", com_stat, "Print out statistics on FILE" },
+  { "!view", com_view, "View the contents of FILE" },
   { (char *)NULL, (int(*)())NULL, (char *)NULL }
 };
 
@@ -127,7 +127,7 @@ main (argc, argv)
 		sprintf(prompt,"LR1[current=%s]: ", paut->filename);
       		line = readline (prompt);
 	}
-	printf(ANSI_COLOR_RESET);
+	printf(ANSI_COLOR_RESET);fflush(stdout);
 
       if (!line)
         break;
@@ -157,6 +157,7 @@ execute_line (line)
   register int i;
   COMMAND *command;
   char *word;
+  char c;
 
   /* Isolate the command word. */
   i = 0;
@@ -167,22 +168,27 @@ execute_line (line)
   while (line[i] && !whitespace (line[i]))
     i++;
 
-  if (line[i])
-    line[i++] = '\0';
+  if ((c=line[i]))
+    line[i] = '\0';
 
   command = find_command (word);
 
-  if (!command)
-    {
-      fprintf (stderr, "%s: No such command for .\n", word);
-      return (-1);
+  if (command)
+  {
+  	/* Get argument to command, if any. */
+        if (c) i++;
+  	  while (whitespace (line[i]))
+    	i++;
+
+  	word = line + i;
+
+  } else {
+    	line[i] = c;
+        command = find_command("!check");
+	word = line;
+/*      fprintf (stderr, "%s: No such command for .\n", word);
+      return (-1); */
     }
-
-  /* Get argument to command, if any. */
-  while (whitespace (line[i]))
-    i++;
-
-  word = line + i;
 
   /* Call the function. */
   return ((*(command->func)) (word));

@@ -27,13 +27,13 @@ int isword(aut_t *paut, char *str) {
 	while (1) {
 		switch(action(paut,heap[heapix].s,str[ix])) {
 			case REJECT:
-				printf("   Word rejected => \""ANSI_COLOR_GREEN"%.*s"ANSI_COLOR_RED, ix,str);
+				printf("   Word "BOLDRED"rejected"ANSI_COLOR_RESET" => \""ANSI_COLOR_GREEN"%.*s"ANSI_COLOR_RED, ix,str);
 				if (isprint(str[ix]))
 					printf("%c", str[ix]);
 				else if (str[ix] == '\n') 
 					printf("\\n");
 				else
-					printf("0x%02x", str[ix]);
+					printf("0x%02x", (unsigned char)str[ix]);
 				printf(ANSI_COLOR_YELLOW);
 //				if (ix <= (int)strlen(str))
 //					printf("%s",&str[ix+1]);
@@ -43,7 +43,7 @@ int isword(aut_t *paut, char *str) {
 					else if (str[i] == '\n')
 						printf("\\n");
 					else
-						printf("\\x%02x", str[i]);
+						printf("0x%02x", (unsigned char)str[i]);
 				}
 				printf("\"\n");
 				printf(ANSI_COLOR_GREEN"                     ");
@@ -52,12 +52,12 @@ int isword(aut_t *paut, char *str) {
 				return (1);
 				break;
 			case ACCEPT:
-				printf("   Word accepted => \""ANSI_COLOR_GREEN);
+				printf("   Word "BOLDGREEN"accepted"ANSI_COLOR_RESET" => \""ANSI_COLOR_GREEN);
 				for (i=0; i<(int)strlen(str) ; i++) {
 					if (isprint(str[i]))
 						printf("%c", str[i]);
 					else if (str[i] != '\n')
-						printf("\\x%02x", str[i]);
+						printf("0x%02x", str[i]);
 				}
 				printf(ANSI_COLOR_RESET"\"\n");
 				return(0);

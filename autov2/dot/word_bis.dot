@@ -8,5 +8,5 @@ digraph DOTaut {
    Q1 -> Q2 [ color=black,  fontcolor=black,label = "A-Z,a-z"];
    "(2, S)" [shape=none];
    Q2 -> "(2, S)" [ color=royalblue1, fontcolor=royalblue1, label = "'\\n',A-Z,a-z"];
-   Q0 -> Q1 [ color=red, fontcolor=red, label = "S-Z,a-z"];
+   Q0 -> Q1 [ color=red, fontcolor=red, label = "S"];
 }
