@@ -78,7 +78,7 @@ $(MAIN_GEN_DOT): $(OBJS_GEN_DOT)
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(INCLUDE_FILES)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(OBJS_DOT_DIR)/%.dot: $(SRCS_AUT_DIR)/%.aut 
+$(OBJS_DOT_DIR)/%.dot: $(SRCS_AUT_DIR)/%.aut $(MAIN_GEN_DOT)
 	./$(MAIN_GEN_DOT) $< > $@
 
 clean:

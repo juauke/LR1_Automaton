@@ -1,16 +1,16 @@
 digraph DOTaut {
+ start [ style=invis ];
+ start -> Q0 [ color=black];
  Accepted [shape=none, fontcolor=green];
    "(0, S)" [shape=none];
-   Q0 -> "(0, S)" [ color=royalblue1, fontcolor=royalblue1, label = "0x0a"];
-   Q0 -> Q1 [ color=black,  fontcolor=black,label = "A-Z"];
-   Q0 -> Q1 [ color=black,  fontcolor=black,label = "a-z"];
+   Q0 -> "(0, S)" [ color=royalblue1, fontcolor=royalblue1, label = "'\\n'"];
+   Q0 -> Q1 [ color=black,  fontcolor=black,label = "A-Z,a-z"];
    "(0, S)" [shape=none];
-   Q1 -> "(0, S)" [ color=royalblue1, fontcolor=royalblue1, label = "0x0a"];
-   Q1 -> Q1 [ color=black,  fontcolor=black,label = "A-Z"];
-   Q1 -> Q1 [ color=black,  fontcolor=black,label = "a-z"];
+   Q1 -> "(0, S)" [ color=royalblue1, fontcolor=royalblue1, label = "'\\n'"];
+   Q1 -> Q1 [ color=black,  fontcolor=black,label = "A-Z,a-z"];
    "(2, S)" [shape=none];
-   Q2 -> "(2, S)" [ color=royalblue1, fontcolor=royalblue1, label = "0x0a"];
-   Q3 -> Accepted [ color=green, fontcolor=green, label = "0x0a"];
+   Q2 -> "(2, S)" [ color=royalblue1, fontcolor=royalblue1, label = "'\\n'"];
+   Q3 -> Accepted [ color=green, fontcolor=green, label = "'\\n'"];
    Q0 -> Q3 [ color=red, fontcolor=red, label = "S"];
    Q1 -> Q2 [ color=red, fontcolor=red, label = "S"];
 }
