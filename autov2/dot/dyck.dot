@@ -1,0 +1,23 @@
+digraph DOTaut {
+ Accepted [shape=none, fontcolor=green];
+   "(0, e)" [shape=none];
+   Q0 -> "(0, e)" [ color=royalblue1, fontcolor=royalblue1, label = "0x0a"];
+   "(0, e)" [shape=none];
+   Q0 -> "(0, e)" [ color=royalblue1, fontcolor=royalblue1, label = "("];
+   Q1 -> Accepted [ color=green, fontcolor=green, label = "0x00"];
+   Q2 -> Q6 [ color=black,  fontcolor=black,label = "0x0a"];
+   Q2 -> Q3 [ color=black,  fontcolor=black,label = "("];
+   "(0, e)" [shape=none];
+   Q3 -> "(0, e)" [ color=royalblue1, fontcolor=royalblue1, label = "( )"];
+   Q4 -> Q3 [ color=black,  fontcolor=black,label = "("];
+   Q4 -> Q5 [ color=black,  fontcolor=black,label = ")"];
+   "(4, e)" [shape=none];
+   Q5 -> "(4, e)" [ color=royalblue1, fontcolor=royalblue1, label = "0x0a"];
+   "(4, e)" [shape=none];
+   Q5 -> "(4, e)" [ color=royalblue1, fontcolor=royalblue1, label = "( )"];
+   "(2, s)" [shape=none];
+   Q6 -> "(2, s)" [ color=royalblue1, fontcolor=royalblue1, label = "0x00"];
+   Q0 -> Q2 [ color=red, fontcolor=red, label = "e"];
+   Q0 -> Q1 [ color=red, fontcolor=red, label = "s"];
+   Q3 -> Q4 [ color=red, fontcolor=red, label = "e"];
+}
