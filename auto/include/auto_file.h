@@ -15,11 +15,11 @@
 
 typedef struct {
 	state_t s;
-	AUT_CHAR_T c;
+	aut_char_t c;
 	state_t sprime;
 } triplet_t;
 
 void freeAut(aut_t **ppaut);
-aut_t *loadAutomateFromFile(char* filename) ;
+aut_t *loadAutomatonFromFile(char* filename) ;
 
 #endif
