@@ -142,7 +142,9 @@ main (argc, argv)
           add_history (s);
 	  write_history(historyfile);
           execute_line (s);
-        }
+        } else {
+          execute_line ("!help");
+	  }
 
       free (line);
     }
