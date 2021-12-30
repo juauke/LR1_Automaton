@@ -9,7 +9,7 @@
 
 #define _AUTO_CHECK_H 1
 
-int isword(automaton_t *paut, char *str) ;
+int isword(automaton_t *paut, uichar_t *str) ;
 
 #endif
 
