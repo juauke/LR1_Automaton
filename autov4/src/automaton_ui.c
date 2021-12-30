@@ -253,7 +253,7 @@ char* command_generator(char *text, int state) {
 	while ((name = commands[list_index].name) != NULL) {
 		list_index++;
 
-		if (strncmp (name, text, len) == 0) return (dupstr(name));
+		if (strncmp (name, text, len) == 0) return dupstr(name);
 	}
 
 	/* If no names matched, then return NULL. */
@@ -279,7 +279,7 @@ int com_list(char* arg) {
 }
 
 int com_view(char* arg) {
-	if (!valid_argument ("view", arg)) exit(1);
+	if (!valid_argument ("view", arg)) return 1;
 
 	sprintf(syscom, "more %s", arg);
 	return system (syscom);
@@ -293,9 +293,9 @@ int com_rename(char* arg) {
 int com_stat(char* arg) {
 	struct stat finfo;
 
-	if (!valid_argument("stat", arg)) exit(1);
+	if (!valid_argument("stat", arg)) return 1;
 
-	if (stat (arg, &finfo) == -1) {perror (arg); exit(2);}
+	if (stat (arg, &finfo) == -1) {perror (arg); return 2;}
 
 	printf("Statistics for `%s':\n", arg);
 
@@ -311,7 +311,7 @@ int com_stat(char* arg) {
 int com_load_automaton_from_file(char* arg) {
 	if (paut!=NULL) freeAut(&paut);
 
-	if (!valid_argument("load", arg)) exit(1);
+	if (!valid_argument("load", arg)) return 1;
 
 	printf("Load automate from `%s'\n", arg);
 	paut=loadAutomatonFromFile(arg);
@@ -329,7 +329,7 @@ int com_automaton_DOT_x() {
 	FILE* temp_stdout;
 	char temp_filename[512];
 	
-	if (paut == NULL) {printf("No automate loaded.\n"); exit(1);}
+	if (paut == NULL) {printf("No automate loaded.\n"); return 1;}
 	
 	oldfd=dup(1);
 	sprintf(temp_filename, "/tmp/.xdot.%s.%d", basename(paut->filename), getpid());
@@ -347,7 +347,7 @@ int com_automaton_DOT_x() {
 	@assigns: nothing;
 	@ensures: prints the DOT graph of the automaton; */
 int com_automaton_DOT() {
-	if (paut == NULL) {printf("No automate loaded.\n"); exit(1);}
+	if (paut == NULL) {printf("No automate loaded.\n"); return 1;}
 	
 	DOTaut(paut);
 	return 0;
@@ -425,7 +425,7 @@ int com_help(char* arg) {
 
 /* Change to the directory ARG. */
 int com_cd(char* arg) {
-	if (chdir(arg) == -1) {perror(arg); exit(1);}
+	if (chdir(arg) == -1) {perror(arg); return 1;}
 
 	com_pwd("");
 	return 0;
@@ -436,7 +436,7 @@ int com_pwd(char* ignore) {
 	char dir[1024], *s;
 
 	s = getcwd(dir, 1024);
-	if (s == 0) {printf("Error getting pwd: %s(%s)\n", dir, ignore); exit(1);}
+	if (s == 0) {printf("Error getting pwd: %s(%s)\n", dir, ignore); return 1;}
 
 	printf("Current directory is %s\n", dir);
 	return 0;
@@ -456,6 +456,6 @@ void too_dangerous(char* caller) {
 /* Return non-zero if ARG is a valid argument for CALLER, else print
    an error message and return zero. */
 int valid_argument(char* caller, char* arg) {
-	if (!arg || !*arg) {fprintf(stderr, "%s: Argument required.\n", caller); exit(0);}
+	if (!arg || !*arg) {fprintf(stderr, "%s: Argument required.\n", caller); return 0;}
 	return 1;
 }
