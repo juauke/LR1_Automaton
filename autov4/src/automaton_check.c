@@ -4,7 +4,7 @@
 #include <ctype.h> 
 
 #include "automaton.h"
-#include "automaton_uichar.h"
+#include "automaton_char.h"
 #include "automaton_color.h"
 #include "automaton_file.h"
 
@@ -16,7 +16,7 @@ typedef struct {
 
 void dumpAutomaton(automaton_t *paut) {
 	int j;
-	uichar_t i;
+	char_t i;
 
 	printf("Automaton [%s], nb_states=%d, nb_characters=%d\n",
 			automaton_filename(paut),
@@ -54,13 +54,12 @@ void dumpAutomaton(automaton_t *paut) {
 	}
 }
 
-int isword(automaton_t *paut, uichar_t *str) {
+int isword(automaton_t *paut, char *str) {
 	int i, ix;
 	int heapix;
 	heap_element_t heap[MAX_HEAP];
 
 	state_t ns;
-	action_t act;
 	char reduit_n;
 	char reduit_alpha;
 
@@ -69,28 +68,20 @@ int isword(automaton_t *paut, uichar_t *str) {
 	heap[heapix].s=0;
 	while (1) {
 		
-		if (str[ix] > automaton_nb_characters(paut) )
-			act=REJECT;
-		else
-			act=automaton_action(paut,heap[heapix].s,str[ix]);
-		
-// printf("action=%d,ix=%d", act, ix);
+// printf("action=%d,ix=%d", automaton_action(paut,heap[heapix].s,str[ix]), ix);
 //		for (i=0; i<heapix;i++) {
 //			printf("heap[%d]=%d,", i, heap[i].s);
 //		}
 //		printf("\n");
 
-		switch(act) {
+		switch(automaton_action(paut,heap[heapix].s,str[ix])) {
 			case REJECT:
-				printf("   Word "BOLDRED"rejected"ANSI_COLOR_RESET" => \""ANSI_COLOR_GREEN);
-				for (i=0; i<ix; i++) 
-					printCharacter(str[i]);
-				printf(ANSI_COLOR_RED);
+				printf("   Word "BOLDRED"rejected"ANSI_COLOR_RESET" => \""ANSI_COLOR_GREEN"%.*s"ANSI_COLOR_RED, ix,str);
 				printCharacter(str[ix]);
 				printf(ANSI_COLOR_YELLOW);
-				for (i=ix+1; i<(int)uic_strlen(str); i++) 
+				for (i=ix+1; i<(int)strlen(str) ; i++) 
 					printCharacter(str[i]);
-				printf(ANSI_COLOR_RESET"\"\n");
+				printf("\"\n");
 				printf(ANSI_COLOR_GREEN"                     ");
 				for (i=0; i<ix; i++) printf("_");
 				printf(ANSI_COLOR_RED"^\n"ANSI_COLOR_RESET);
@@ -98,7 +89,7 @@ int isword(automaton_t *paut, uichar_t *str) {
 				break;
 			case ACCEPT:
 				printf("   Word "BOLDGREEN"accepted"ANSI_COLOR_RESET" => \""ANSI_COLOR_GREEN);
-				for (i=0; i<(int)uic_strlen(str) ; i++) 
+				for (i=0; i<(int)strlen(str) ; i++) 
 					if (isprint(str[i])) printCharacter(str[i]);
 				printf(ANSI_COLOR_RESET"\"\n");
 				return(0);
