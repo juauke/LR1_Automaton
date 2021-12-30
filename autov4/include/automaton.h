@@ -4,25 +4,25 @@
 #include <ctype.h> 
 
 #ifndef _AUTO_H
-
 #define _AUTO_H 1
+
+#include "automaton_uichar.h"
 
 #define AUTOMATON_UNKNOWN_STATE 	0xff
 #define AUTOMATON_UNKNOWN_REDUIT_N 	0xff
 
 typedef enum {REJECT=0,ACCEPT=1,DECALE=2,REDUCE=3} action_t ;
 typedef unsigned char state_t;
-typedef unsigned int char_t;
 typedef unsigned int reduit_n_t;
 typedef enum {TRUE=1, FALSE=0} boolean_t;
 typedef	struct {
 		state_t		nb_states;
-		char_t		nb_characters;
+		uichar_t		nb_characters;
 		char			*filename;
 		boolean_t		*allowed_characters;
 		action_t		*actions;
 		reduit_n_t		*reduit_n;
-		char_t			*reduit_c;
+		uichar_t			*reduit_c;
 		state_t			*decale;
 		state_t			*branch;
 } automaton_t;

@@ -28,13 +28,13 @@ LIBS = -lreadline
 
 # define the C source files
 SRCS_DIR = src
-SRCS = $(SRCS_DIR)/automaton_char.c $(SRCS_DIR)/automaton_check.c  $(SRCS_DIR)/automaton_DOT.c  $(SRCS_DIR)/automaton_file.c  $(SRCS_DIR)/automaton_ui.c
-SRCS_GEN_DOT = $(SRCS_DIR)/automaton_char.c $(SRCS_DIR)/automaton_file.c $(SRCS_DIR)/automaton_DOT.c $(SRCS_DIR)/get_DOT.c
+SRCS = $(SRCS_DIR)/automaton_uichar.c $(SRCS_DIR)/automaton_check.c  $(SRCS_DIR)/automaton_DOT.c  $(SRCS_DIR)/automaton_file.c  $(SRCS_DIR)/automaton_ui.c
+SRCS_GEN_DOT = $(SRCS_DIR)/automaton_uichar.c $(SRCS_DIR)/automaton_file.c $(SRCS_DIR)/automaton_DOT.c $(SRCS_DIR)/get_DOT.c
 SRCS_AUT_DIR = aut
 SRCS_AUT = $(SRCS_AUT_DIR)/arith.aut $(SRCS_AUT_DIR)/dyck.aut $(SRCS_AUT_DIR)/word.aut $(SRCS_AUT_DIR)/word_bis.aut
 
 # define the C include files
-INCLUDE_FILES = $(INCLUDE_DIR)/automaton_check.h $(INCLUDE_DIR)/automaton_color.h $(INCLUDE_DIR)/automaton_DOT.h $(INCLUDE_DIR)/automaton_file.h $(INCLUDE_DIR)/automaton.h $(INCLUDE_DIR)/automaton_char.h
+INCLUDE_FILES = $(INCLUDE_DIR)/automaton_check.h $(INCLUDE_DIR)/automaton_color.h $(INCLUDE_DIR)/automaton_DOT.h $(INCLUDE_DIR)/automaton_file.h $(INCLUDE_DIR)/automaton.h $(INCLUDE_DIR)/automaton_uichar.h
 
 # define the C object files 
 #
