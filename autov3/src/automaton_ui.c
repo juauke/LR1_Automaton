@@ -16,7 +16,7 @@ int com_automate_DOT_x() ; /* fileman.c -- A tiny application which demonstrates
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#include "automaton_char.h"
+#include "automaton_uichar.h"
 #include "automaton_file.h"
 #include "automaton_color.h"
 #include "automaton_DOT.h"
@@ -118,7 +118,7 @@ main (argc, argv)
       		line = readline ("LR1: ");
 	} else {
 		printf(ANSI_COLOR_RESET" >>> Allowed characters = ["ANSI_COLOR_GREEN);
-		for (char_t i=0 ; i<automaton_nb_characters(paut); i++) {
+		for (uichar_t i=0 ; i<automaton_nb_characters(paut); i++) {
 			if (automaton_isAllowedCharacter(paut,i) && isprint(i)) {
 				printCharacter(i);
 			}
@@ -428,32 +428,11 @@ com_automaton_DOT()
   return (1);
 }
 
-char *replaceBackslashN(char *s) {
-	char *p,*p1, *buff;
-
-	buff=malloc(strlen(s));
-	for (p=s, p1=buff;*p;p++, p1++) {
-		switch (*p) {
-		case '\\':
-			if ( *(p+1)  == 'n' ) { 
-				p++;
-				*p1='\n';
-			}
-			break;
-		default:
-			*p1=*p;
-			break;
-		}
-	}
-	*p1='\0';
-	return(buff);
-}
-
 int
 com_automaton_isword(arg)
      char *arg;
 {
-	char *ns;
+	uichar_t *ns, *ns2;
 	int l;
 
 	if (paut == NULL) {
@@ -462,14 +441,17 @@ com_automaton_isword(arg)
 	}
 	if (!valid_argument ("automateCheck", arg))
 		return (0);
-//	/* if user nedds to write '\n' explicitely */
-//	ns=replaceBackslashN(arg);
-	l=strlen(arg) ;
-	ns=malloc(l+1);
-	strcpy(ns,arg);
-	ns[l]='\n';
-	ns[l+1]='\0';
-	isword(paut,ns);
+	if ((ns=ctouic(arg)) == NULL) return(0);
+	l=uic_strlen(ns) ;
+	if ((ns2=calloc(l+2,sizeof(uichar_t))) ==NULL) {
+		free (ns);
+		return(0);
+	}
+	uic_strcpy(ns2,ns);
+	ns2[l]='\n';
+	ns2[l+1]='\0';
+	isword(paut,ns2);
+	free(ns2);
 	free(ns);
   return (1);
 }

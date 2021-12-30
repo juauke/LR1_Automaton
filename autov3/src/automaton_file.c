@@ -37,7 +37,7 @@ automaton_t *allocAutomaton(int nb_states, int nb_chars, char *filename) {
 		freeAut(&paut) ; return (NULL);
 	}
 	memset(paut->reduit_n, AUTOMATON_UNKNOWN_REDUIT_N, automaton_nb_states(paut));
-	if ((paut->reduit_c=calloc(sizeof(char_t),automaton_nb_states(paut))) == NULL) {
+	if ((paut->reduit_c=calloc(sizeof(uichar_t),automaton_nb_states(paut))) == NULL) {
 		freeAut(&paut) ; return (NULL);
 	}
 	if ((paut->decale=calloc(sizeof(state_t),automaton_nb_states(paut)*automaton_nb_characters(paut))) == NULL) {
@@ -57,10 +57,10 @@ automaton_t *loadAutomatonFromFile(char* filename) {
 	FILE *automaton_file;
 	int nb_states,nb_chars, character_size, triplet_size, reduit_n_size, c, k;
 	char *buffer, triplet[7], *p;
-	char_t character;
+	uichar_t character;
 	int result, n;
 	state_t j;
-	char_t i;
+	uichar_t i;
 	automaton_t *paut;
 
 	if ( (automaton_file = fopen( filename, "r") ) == NULL ) return(NULL);

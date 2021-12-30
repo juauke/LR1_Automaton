@@ -4,10 +4,10 @@
 #include <ctype.h> 
 
 #include "automaton.h"
-#include "automaton_char.h"
+#include "automaton_uichar.h"
 #include "automaton_file.h"
 
-void printCharacterDOT(char_t c) {
+void printCharacterDOT(uichar_t c) {
        	if (c == ' ') printf("' '"); 
 	else if (c == ',') printf("','"); 
 	else if (isprint(c)) printf("%c",c);
@@ -62,7 +62,7 @@ void makeCharacterListWithSameAction(automaton_t *paut, char *printed,int first,
 }
 
 void DOTaut(automaton_t *paut)  {
-	char_t i;
+	uichar_t i;
 	state_t j;
 	char *alreadyPrinted;
 
