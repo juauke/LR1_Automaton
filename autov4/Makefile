@@ -51,8 +51,11 @@ OBJS_DOT_DIR = dot
 OBJS_DOT = $(SRCS_AUT:$(SRCS_AUT_DIR)/%.aut=$(OBJS_DOT_DIR)/%.dot)
 
 # define the executable file 
-MAIN = bin/automaton_ui 
-MAIN_GEN_DOT = bin/get_DOT
+BIN_DIR = bin
+MAIN = $(BIN_DIR)/automaton_ui 
+MAIN_GEN_DOT = $(BIN_DIR)/get_DOT
+
+MD = mkdir -p
 #
 # The following part of the makefile is generic; it can be used to 
 # build any executable just by changing the definitions above and by
@@ -65,24 +68,34 @@ MAIN_GEN_DOT = bin/get_DOT
 
 all:    $(MAIN) $(MAIN_GEN_DOT) $(OBJS_DOT)
 
-$(MAIN): $(OBJS)
+$(MAIN): $(OBJS_DIR) $(BIN_DIR) $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
 
-$(MAIN_GEN_DOT): $(OBJS_GEN_DOT) 
+$(MAIN_GEN_DOT): $(OBJS_DOT_DIR) $(BIN_DIR) $(OBJS_GEN_DOT) 
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN_GEN_DOT) $(OBJS_GEN_DOT) $(LFLAGS) $(LIBS)
+
+$(OBJS_DIR):
+	$(MD) $(OBJS_DIR)
+
+$(OBJS_DOT_DIR):
+	$(MD) $(OBJS_DOT_DIR)
+
+$(BIN_DIR):
+	$(MD) $(BIN_DIR)
+
 
 # this is a suffix replacement rule for building .o's from .c's
 # it uses automatic variables $<: the name of the prerequisite of
 # the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
 # (see the gnu make manual section about automatic variables)
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c 
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(INCLUDE_FILES)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(OBJS_DOT_DIR)/%.dot: $(SRCS_AUT_DIR)/%.aut $(MAIN_GEN_DOT)
+$(OBJS_DOT_DIR)/%.dot: $(SRCS_AUT_DIR)/%.aut $(MAIN_GEN_DOT) $(OBJS_DOT_DIR)
 	./$(MAIN_GEN_DOT) $< > $@
 
 clean:
-	$(RM) $(OBJS_DOT_DIR)/*.dot $(OBJS_DIR)/*.o *~ $(MAIN) $(MAIN_GEN_DOT)
+	$(RM) -r $(BIN_DIR) $(OBJS_DIR) $(OBJS_DOT_DIR) $(OBJS_DOT_DIR)/*.dot $(OBJS_DIR)/*.o *~ $(MAIN) $(MAIN_GEN_DOT)
 
 depend: $(SRCS)
 	makedepend $(INCLUDES) $^
