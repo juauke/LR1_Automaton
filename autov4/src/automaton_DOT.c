@@ -7,14 +7,6 @@
 #include "automaton_uichar.h"
 #include "automaton_file.h"
 
-void printCharacterDOT(uichar_t c) {
-       	if (c == ' ') printf("' '"); 
-	else if (c == ',') printf("','"); 
-	else if (isprint(c)) printf("%c",c);
-       	else if (c == '\n') printf("'\\\\n'"); 
-	else printf("'0x%02x'",(unsigned char)c); 
-}
-
 void makeCharacterListWithSameAction(automaton_t *paut, char *printed,int first, state_t cur_state, state_t decale_state) {
 	unsigned int i, same;
 	unsigned int prec_same_i;

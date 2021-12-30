@@ -3,10 +3,11 @@
 #include <string.h>
 #include <ctype.h> 
 
+#include "automaton.h"
 #include "automaton_uichar.h"
 #include "automaton_file.h"
 
-void printCharacter(uichar_t c) {
+void _printCharacter(uichar_t c, boolean_t dotFormat) {
 	char *ns;
 	uichar_t sc[2];
 
@@ -23,7 +24,9 @@ void printCharacter(uichar_t c) {
 	} else {
        		if (c == ' ') printf("' '"); 
 		else if (c == ',') printf("','"); 
-		else if (c == '\n') printf("'\\n'"); 
+		else if (c == '\n')
+			if (dotFormat) printf("'\\\\n'");
+			else printf("\\n");
 		else if (isprint(c)) printf("%c", (char)c);
 		else printf("'0x%x'",(char)c); 
 	}
