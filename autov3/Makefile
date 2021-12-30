@@ -63,7 +63,7 @@ MAIN_GEN_DOT = bin/get_DOT
 
 .PHONY: depend clean
 
-all:    $(MAIN) $(MAIN_GEN_DOT) $(OBJS_DOT)
+all: $(MAIN) $(MAIN_GEN_DOT) $(OBJS_DOT)
 
 $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
@@ -75,7 +75,7 @@ $(MAIN_GEN_DOT): $(OBJS_GEN_DOT)
 # it uses automatic variables $<: the name of the prerequisite of
 # the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
 # (see the gnu make manual section about automatic variables)
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c 
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(INCLUDE_FILES)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJS_DOT_DIR)/%.dot: $(SRCS_AUT_DIR)/%.aut $(MAIN_GEN_DOT)

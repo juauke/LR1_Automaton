@@ -25,28 +25,28 @@ automaton_t *allocAutomaton(int nb_states, int nb_chars, char *filename) {
 	automaton_nb_states(paut)=nb_states;
 	automaton_nb_characters(paut)=nb_chars;
 	
-	if ((paut->filename=calloc(sizeof(char),strlen(filename)+1)) == NULL) {perror("calloc-filename"); freeAut(&paut); return NULL;}
+	if ((paut->filename=calloc(sizeof(char), strlen(filename)+1)) == NULL) {perror("calloc-filename"); freeAut(&paut); return NULL;}
 	strcpy(automaton_filename(paut), filename);
 
-	if ((paut->allowed_characters=calloc(sizeof(boolean_t),automaton_nb_characters(paut))) == NULL) {perror("calloc-allowed_characters"); freeAut(&paut); return NULL;}
+	if ((paut->allowed_characters=calloc(sizeof(boolean_t), automaton_nb_characters(paut))) == NULL) {perror("calloc-allowed_characters"); freeAut(&paut); return NULL;}
 	
-	if ((paut->actions=calloc(sizeof(action_t),automaton_nb_states(paut)*automaton_nb_characters(paut))) == NULL) {perror("calloc-actions"); freeAut(&paut); return NULL;}
+	if ((paut->actions=calloc(sizeof(action_t), automaton_nb_states(paut)*automaton_nb_characters(paut))) == NULL) {perror("calloc-actions"); freeAut(&paut); return NULL;}
 	
-	if ((paut->reduit_n=calloc(sizeof(reduit_n_t),automaton_nb_states(paut))) == NULL) {perror("calloc-reduit_n"); freeAut(&paut); return NULL;}
+	if ((paut->reduit_n=calloc(sizeof(reduit_n_t), automaton_nb_states(paut))) == NULL) {perror("calloc-reduit_n"); freeAut(&paut); return NULL;}
 	memset(paut->reduit_n, AUTOMATON_UNKNOWN_REDUIT_N, automaton_nb_states(paut));
 	
-	if ((paut->reduit_c=calloc(sizeof(char_t),automaton_nb_states(paut))) == NULL) {perror("calloc-reduit_c"); freeAut(&paut); return NULL;}
+	if ((paut->reduit_c=calloc(sizeof(char_t), automaton_nb_states(paut))) == NULL) {perror("calloc-reduit_c"); freeAut(&paut); return NULL;}
 	
-	if ((paut->decale=calloc(sizeof(state_t),automaton_nb_states(paut)*automaton_nb_characters(paut))) == NULL) {perror("calloc-decale"); freeAut(&paut); return NULL;}
+	if ((paut->decale=calloc(sizeof(state_t), automaton_nb_states(paut)*automaton_nb_characters(paut))) == NULL) {perror("calloc-decale"); freeAut(&paut); return NULL;}
 	memset(paut->decale, AUTOMATON_UNKNOWN_STATE, sizeof(state_t)*automaton_nb_states(paut)*automaton_nb_characters(paut));
 
-	if ((paut->branch=calloc(sizeof(state_t),automaton_nb_states(paut)*automaton_nb_characters(paut))) == NULL) {perror("calloc-branch"); freeAut(&paut); return NULL;}
+	if ((paut->branch=calloc(sizeof(state_t), automaton_nb_states(paut)*automaton_nb_characters(paut))) == NULL) {perror("calloc-branch"); freeAut(&paut); return NULL;}
 	memset(paut->branch, AUTOMATON_UNKNOWN_STATE, sizeof(state_t)*automaton_nb_states(paut)*automaton_nb_characters(paut));
 	
 	return paut;
 }
 
-#define MAX_ALPHABET_SIZE	0x110000
+#define MAX_ALPHABET_SIZE 0x110000
 
 automaton_t *loadAutomatonFromFile(char* filename) {
 	FILE *automaton_file;
@@ -58,40 +58,42 @@ automaton_t *loadAutomatonFromFile(char* filename) {
 	char_t i;
 	automaton_t *paut;
 
-	if ( (automaton_file = fopen( filename, "r") ) == NULL ) return NULL;
+	if ( (automaton_file = fopen(filename, "r")) == NULL ) {perror("fopen"); return NULL;}
 
-	result=fscanf(automaton_file,AUT_HEADER,triplet, &(nb_states));
+	result=fscanf(automaton_file, AUT_HEADER, triplet, &(nb_states));
 	if (result == EOF) {perror("fscanf1-nb_states"); return NULL;}
 	if (result != 2) {perror("fscanf2-nb_states"); return NULL;}
 
 	character_size=strlen(triplet);
 // hypothèse reduit_n_size = character_size 
-	reduit_n_size = character_size ;
+	reduit_n_size = character_size;
 	triplet_size=strlen(triplet)+2;
 	if ((buffer=calloc(sizeof(action_t),MAX_ALPHABET_SIZE*nb_states))==NULL) {perror("calloc-buffer"); return NULL;}
 	
 	p=buffer;
 	while ((c=fgetc(automaton_file)) != AUT_EOL) {
-		if (c>0xff) {printf("Error in fgetc\n");return NULL;}
+		if (c>0xff) {printf("Error in fgetc\n"); return NULL;}
 
-		*p++=(char)c;
+		*p++=(char) c;
 	}
 	nb_chars=(p-buffer)/nb_states;
 	if ((paut=allocAutomaton(nb_states, nb_chars, filename)) == NULL) {perror("allocAutomaton"); return NULL;}
+
 /* populate actions */
-	for (j=0; j<automaton_nb_states(paut) ; j++) {
+	for (j=0; j<automaton_nb_states(paut); j++) {
 		for (i=0; i<automaton_nb_characters(paut); i++)
 			automaton_action(paut,j,i)=buffer[j*automaton_nb_characters(paut)+i];
 	}
 
 /* populate reduit_n */
 	result=fread(buffer,reduit_n_size,automaton_nb_states(paut), automaton_file);
+
 	for (j=0; j<automaton_nb_states(paut) ; j++) {
 		for (n=0,k=0; k<reduit_n_size; k++) n+=buffer[j*reduit_n_size+k]<<(8*k);
 		automaton_reduit_n(paut,j)=n;
 	}
-	if (result != paut->nb_states) goto FAIL;
-	if ((result=fgetc(automaton_file)) != AUT_EOL) goto FAIL;
+	if (result != paut->nb_states) {perror("fread-reduit_n"); goto FAIL;}
+	if ((result=fgetc(automaton_file)) != AUT_EOL) {perror("fgetc-reduit_n"); goto FAIL;}
 
 /* populate reduit_c */
 	result=fread(buffer,character_size,automaton_nb_states(paut), automaton_file);
@@ -99,8 +101,8 @@ automaton_t *loadAutomatonFromFile(char* filename) {
 		for (character=0,k=0; k<character_size; k++) character+=buffer[j*character_size+k]<<(8*k);
 		automaton_reduit_c(paut,j)=character;
 	}
-	if (result != paut->nb_states) goto FAIL;
-	if ((result=fgetc(automaton_file)) != AUT_EOL) goto FAIL;
+	if (result != paut->nb_states) {perror("fread-reduit_c"); goto FAIL;}
+	if ((result=fgetc(automaton_file)) != AUT_EOL) {perror("fgetc-reduit_c"); goto FAIL;}
 
 /* populate decale */
 	while ( fread(&triplet, triplet_size, 1, automaton_file) != 0 ) {
