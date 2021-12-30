@@ -7,10 +7,10 @@
 #define _AUTO_H 1
 
 /* Initialize the states of the tables of shift and goto */
-#define AUTOMATON_UNKNOWN_STATE 	0xff
+#define AUTOMATON_UNKNOWN_STATE 	0xFFFFFFFF
 
 /* Initialize the states of the tables of reduce_n */
-#define AUTOMATON_UNKNOWN_REDUCE_N 	0xff
+#define AUTOMATON_UNKNOWN_REDUCE_N 	0xFFFFFFFF
 
 /* Definition of the different actions of the automaton */
 typedef enum {REJECT=0,ACCEPT=1,SHIFT=2,REDUCE=3} action_t;
@@ -21,7 +21,7 @@ typedef unsigned int state_t;
 /* Definition of the type of the states of the automaton */
 typedef unsigned int reduce_n_t;
 
-/* Definition a a type for booleans */
+/* Definition of a type for booleans */
 typedef enum {TRUE=1, FALSE=0} boolean_t;
 
 /* Definition of a type for characters */
@@ -62,7 +62,7 @@ typedef	struct {
 	@assigns: nothing;
 	@ensures: returns TRUE iff the character c is used otherwise FALSE; */
 #define automaton_allowed_character(paut,c)    	paut->allowed_characters[c]
-#define automaton_isAllowedCharacter(paut,c)   	(paut->allowed_characters[c])
+#define automaton_isAllowedCharacter(paut,c)   	(paut->allowed_characters[c]==1)
 
 
 /*  @requires: paut is a valid adress of an automaton structure, s is state_t and c is a uichar_t;

@@ -305,7 +305,9 @@ int com_stat(char* arg) {
 	printf("    Last modified at: %s", ctime(&finfo.st_mtime));
 	return 0;
 }
-
+/*  @requires: arg is a valid path to the automaton file;
+	@assigns: allocates the automaton structure;
+	@ensures: initializes the structure with the content of the file */
 int com_load_automaton_from_file(char* arg) {
 	if (paut!=NULL) freeAut(&paut);
 
@@ -319,6 +321,9 @@ int com_load_automaton_from_file(char* arg) {
 	return 0;
 }
 
+/*  @requires: nothing;
+	@assigns: creates a temp graph DOT file and executes a system command;
+	@ensures: opens an X11 window containing the DOT graph of the automaton; */
 int com_automaton_DOT_x() {
 	int oldfd;
 	FILE* temp_stdout;
@@ -337,6 +342,10 @@ int com_automaton_DOT_x() {
 	printf("Execute : %s\n", syscom);
 	return system(syscom);
 }
+
+/*  @requires: nothing;
+	@assigns: nothing;
+	@ensures: prints the DOT graph of the automaton; */
 int com_automaton_DOT() {
 	if (paut == NULL) {printf("No automate loaded.\n"); exit(1);}
 	
@@ -363,17 +372,21 @@ char *replaceBackslashN(char *s) {
 }
 */
 
+/*  @requires: arg is a valid array of char;
+	@assigns: nothing;
+	@ensures: prints the result of the analysis of arg by the automaton; */
 int com_automaton_isword(char* arg) {
 	uichar_t *ns, *ns2;
 	int l;
 
 	if (paut == NULL) {printf("No automate loaded.\n"); return 1;}
 
+/* converts the char array to a uichar_t array to pass it to isword function */
 	if (!valid_argument ("automateCheck", arg)) return 2;
-	if ((ns=ctouic(arg)) == NULL) return 0;
+	if ((ns=ctouic(arg)) == NULL) return 3;
 	l=uic_strlen(ns);
 
-	if ((ns2=calloc(l+2,sizeof(uichar_t))) == NULL) {perror("calloc-ui"); free(ns); return 3;}
+	if ((ns2=calloc(l+2,sizeof(uichar_t))) == NULL) {perror("calloc-ui"); free(ns); return 4;}
 	uic_strcpy(ns2,ns);
 	ns2[l]='\n'; ns2[l+1]='\0';
 

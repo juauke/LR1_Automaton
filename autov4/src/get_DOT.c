@@ -9,11 +9,13 @@
 #include "automaton_file.h"
 #include "automaton_DOT.h"
 
-int main(int argc, char * argv[]) {
-	if (argc < 2) {
-		printf("Argument missing\n");
+int main(int argc, char** argv) {
+	if (argc != 2) {
+		printf("%s: usage: %s <automaton_file>\n", argv[0], argv[0]);
 		exit(1);
 	}
 	automaton_t *paut=loadAutomatonFromFile(argv[1]);
-	DOTaut(paut);
+	DOTaut(paut);	// displays the automaton graph in DOT format
+	freeAut(&paut);
+	return 0;
 }
