@@ -24,8 +24,8 @@ void _printCharacter(uichar_t c, boolean_t dotFormat) {
 	}
 	else {
 // display unibyte character
-		if (c == ' ') printf("' '"); 
-		else if (c == ',') printf("','"); 
+		if (c == ' ' && dotFormat) printf("' '"); 
+		else if (c == ',' && dotFormat) printf("','"); 
 		else if (c == '\n')
 			if (dotFormat) printf("'\\\\n'");
 			else printf("\\n");
