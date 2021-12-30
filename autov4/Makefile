@@ -66,22 +66,15 @@ MD = mkdir -p
 
 .PHONY: depend clean
 
-all:    $(MAIN) $(MAIN_GEN_DOT) $(OBJS_DOT)
+all: $(MAIN) $(MAIN_GEN_DOT) $(OBJS_DOT)
 
-$(MAIN): $(OBJS_DIR) $(BIN_DIR) $(OBJS)
+$(MAIN): $(OBJS)
+	@$(MD) $(BIN_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
 
-$(MAIN_GEN_DOT): $(OBJS_DOT_DIR) $(BIN_DIR) $(OBJS_GEN_DOT) 
+$(MAIN_GEN_DOT): $(OBJS_GEN_DOT) 
+	@$(MD) $(BIN_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN_GEN_DOT) $(OBJS_GEN_DOT) $(LFLAGS) $(LIBS)
-
-$(OBJS_DIR):
-	$(MD) $(OBJS_DIR)
-
-$(OBJS_DOT_DIR):
-	$(MD) $(OBJS_DOT_DIR)
-
-$(BIN_DIR):
-	$(MD) $(BIN_DIR)
 
 
 # this is a suffix replacement rule for building .o's from .c's
@@ -89,9 +82,11 @@ $(BIN_DIR):
 # the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
 # (see the gnu make manual section about automatic variables)
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(INCLUDE_FILES)
+	@$(MD) $(OBJS_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(OBJS_DOT_DIR)/%.dot: $(SRCS_AUT_DIR)/%.aut $(MAIN_GEN_DOT) $(OBJS_DOT_DIR)
+$(OBJS_DOT_DIR)/%.dot: $(SRCS_AUT_DIR)/%.aut $(MAIN_GEN_DOT)
+	@$(MD) $(OBJS_DOT_DIR)
 	./$(MAIN_GEN_DOT) $< > $@
 
 clean:
