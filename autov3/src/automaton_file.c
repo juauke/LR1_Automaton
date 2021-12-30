@@ -49,7 +49,7 @@ automaton_t *allocAutomaton(int nb_states, int nb_chars, char *filename) {
 #define MAX_ALPHABET_SIZE 0x110000
 
 automaton_t *loadAutomatonFromFile(char* filename) {
-	FILE *automaton_file;
+	FILE* automaton_file;
 	int nb_states,nb_chars, character_size, triplet_size, reduit_n_size, c, k;
 	char *buffer, triplet[7], *p;
 	char_t character;
@@ -106,16 +106,16 @@ automaton_t *loadAutomatonFromFile(char* filename) {
 
 /* populate decale */
 	while ( fread(&triplet, triplet_size, 1, automaton_file) != 0 ) {
-		if (memcmp((char *)&triplet, AUT_END_OF_SEQUENCE, triplet_size) == 0 ) break;
+		if (memcmp((char*) &triplet, AUT_END_OF_SEQUENCE, triplet_size) == 0 ) break;
 		for (character=0,k=0; k<triplet_size-2; k++) character+=triplet[1+k]<<(8*k);
 		automaton_decale(paut,triplet[0],character)=triplet[triplet_size-1];
 	}
 
 /* populate branch */
 	while (fread(&triplet, triplet_size, 1, automaton_file) != 0) {
-		if (memcmp((char *)&triplet, AUT_END_OF_SEQUENCE, triplet_size) == 0) break;
+		if (memcmp((char*) &triplet, AUT_END_OF_SEQUENCE, triplet_size) == 0) break;
 		for (character=0,k=0; k<triplet_size-2; k++) character+=triplet[1+k]<<(8*k);
-		automaton_branch(paut,triplet[0],character)=triplet[triplet_size-1];
+		automaton_branch(paut, triplet[0], character)=triplet[triplet_size-1];
 	}
 
 	for( int j=0; j < automaton_nb_states(paut); j++) {
@@ -125,13 +125,14 @@ automaton_t *loadAutomatonFromFile(char* filename) {
 		}
 	}
 
+	goto CLOSE;
+
+FAIL:
+	freeAut(&paut);
+	paut=NULL;
+
+CLOSE:
 	if (buffer != NULL) free(buffer);
 	fclose(automaton_file);
 	return paut;
-
-FAIL:
-	if (buffer != NULL) free(buffer);
-	freeAut(&paut);
-	fclose(automaton_file);
-	return NULL;
 }
