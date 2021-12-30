@@ -10,8 +10,8 @@
 #include "automaton_DOT.h"
 
 int main(int argc, char * argv[]) {
-	if (argc != 2) {
-		printf("%s: usage: %s [.aut_file]\n", argv[0], argv[0]);
+	if (argc < 2) {
+		printf("Argument missing\n");
 		exit(1);
 	}
 	automaton_t *paut=loadAutomatonFromFile(argv[1]);
