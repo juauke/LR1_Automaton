@@ -10,12 +10,12 @@ void DOTaut(aut_t *paut)  {
 	int i,i2,j;
 	state_t cur_s;
 
-	if (paut == NULL) return;
+	if (paut == NULL) {perror("nothing-to-print"); return;}
 
 	printf("digraph DOTaut {\n");
 	printf(" Accepted [shape=none, fontcolor=green];\n");
 	for( j=0; j < paut->nb_states; j++) {
-		for (i=0; i<AUT_ALPHABET_SIZE; i++) {
+		for (i=0; i < AUT_ALPHABET_SIZE; i++) {
 			switch (paut->actions[j*AUT_ALPHABET_SIZE+i]) {
 				case REJECT:
 					break;
@@ -63,8 +63,8 @@ void DOTaut(aut_t *paut)  {
 		}
 	}
 	for( j=0; j < paut->nb_states; j++) {
-		for (i=0; i<AUT_ALPHABET_SIZE; i++) {
-			if ( branch(paut,j,i) !=0 && branch(paut,j,i) < paut->nb_states ) {
+		for (i=0; i < AUT_ALPHABET_SIZE; i++) {
+			if (branch(paut,j,i) != 0 && branch(paut,j,i) < paut->nb_states) {
 				printf("   Q%d -> Q%d [ color=red, fontcolor=red, label = \"", j, branch(paut,j,i));
 				if (isprint(i)) printf("%c",i); else printf("0x%02x",i); 
 				printf("\"];\n");
