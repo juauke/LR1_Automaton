@@ -7,7 +7,7 @@
 #include "automaton_uichar.h"
 #include "automaton_file.h"
 
-void makeCharacterListWithSameAction(automaton_t *paut, char *printed,int first, state_t cur_state, state_t decale_state) {
+void makeCharacterListWithSameAction(automaton_t *paut, char *printed,int first, state_t cur_state, state_t shift_state) {
 	unsigned int i, same;
 	unsigned int prec_same_i;
 	unsigned int nbsame;
@@ -23,9 +23,9 @@ void makeCharacterListWithSameAction(automaton_t *paut, char *printed,int first,
 				same=((automaton_action(paut,cur_state,i)) ==  cur_action);
 
 				break;		
-			case DECALE:
+			case SHIFT:
 				same= ( (automaton_action(paut,cur_state,i) ==  cur_action) &&
-					(automaton_decale(paut,cur_state,i) == decale_state) ) ;
+					(automaton_shift(paut,cur_state,i) == shift_state) ) ;
 				break;		
 			default:
 				same=0;
@@ -76,14 +76,14 @@ void DOTaut(automaton_t *paut)  {
 					makeCharacterListWithSameAction(paut,alreadyPrinted, i, j,0);
 					printf("\"];\n");
 					break;
-				case DECALE:
-					printf("   Q%d -> Q%d [ color=black,  fontcolor=black,label = \"", j , automaton_decale(paut,j,i));
-					makeCharacterListWithSameAction(paut,alreadyPrinted, i,j,automaton_decale(paut,j,i));
+				case SHIFT:
+					printf("   Q%d -> Q%d [ color=black,  fontcolor=black,label = \"", j , automaton_shift(paut,j,i));
+					makeCharacterListWithSameAction(paut,alreadyPrinted, i,j,automaton_shift(paut,j,i));
 					printf("\"];\n");
 					break;
 				case REDUCE:
-					printf("   \"(%d, %c)\" [shape=none];\n", automaton_reduit_n(paut,j), automaton_reduit_c(paut,j));
-					printf("   Q%d -> \"(%d, %c)\" [ color=royalblue1, fontcolor=royalblue1, label = \"", j, automaton_reduit_n(paut,j), automaton_reduit_c(paut,j));
+					printf("   \"(%d, %c)\" [shape=none];\n", automaton_reduce_n(paut,j), automaton_reduce_c(paut,j));
+					printf("   Q%d -> \"(%d, %c)\" [ color=royalblue1, fontcolor=royalblue1, label = \"", j, automaton_reduce_n(paut,j), automaton_reduce_c(paut,j));
 					makeCharacterListWithSameAction(paut,alreadyPrinted, i, j, 0);
 					printf("\"];\n");
 					break;
@@ -94,8 +94,8 @@ void DOTaut(automaton_t *paut)  {
 	}
 	for( j=0; j < automaton_nb_states(paut); j++) {
 		for (i=0; i<automaton_nb_characters(paut); i++) {
-			if ( automaton_branch(paut,j,i) != AUTOMATON_UNKNOWN_STATE ) {
-				printf("   Q%d -> Q%d [ color=red, fontcolor=red, label = \"", j, automaton_branch(paut,j,i));
+			if ( automaton_goto(paut,j,i) != AUTOMATON_UNKNOWN_STATE ) {
+				printf("   Q%d -> Q%d [ color=red, fontcolor=red, label = \"", j, automaton_goto(paut,j,i));
 				printCharacterDOT(i) ;
 				printf("\"];\n");
 			}

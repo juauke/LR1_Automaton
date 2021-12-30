@@ -6,20 +6,20 @@
 #ifndef _AUTO_H
 #define _AUTO_H 1
 
-/* Initialize the states of the tables of decale and branche */
+/* Initialize the states of the tables of shift and goto */
 #define AUTOMATON_UNKNOWN_STATE 	0xff
 
-/* Initialize the states of the tables of reduit_n */
-#define AUTOMATON_UNKNOWN_REDUIT_N 	0xff
+/* Initialize the states of the tables of reduce_n */
+#define AUTOMATON_UNKNOWN_REDUCE_N 	0xff
 
 /* Definition of the different actions of the automaton */
-typedef enum {REJECT=0,ACCEPT=1,DECALE=2,REDUCE=3} action_t;
+typedef enum {REJECT=0,ACCEPT=1,SHIFT=2,REDUCE=3} action_t;
 
 /* Definition of the type of the states (considering there are no more than 256 distinct characters) of the automaton */
 typedef unsigned int state_t;
 
 /* Definition of the type of the states of the automaton */
-typedef unsigned int reduit_n_t;
+typedef unsigned int reduce_n_t;
 
 /* Definition a a type for booleans */
 typedef enum {TRUE=1, FALSE=0} boolean_t;
@@ -35,10 +35,10 @@ typedef	struct {
 		char			*filename;
 		boolean_t		*allowed_characters;
 		action_t		*actions;
-		reduit_n_t		*reduit_n;
-		uichar_t		*reduit_c;
-		state_t			*decale;
-		state_t			*branch;
+		reduce_n_t		*reduce_n;
+		uichar_t		*reduce_c;
+		state_t			*shift;
+		state_t			*_goto;
 } automaton_t;
 
 /* Macros to get each component of the automaton structure */
@@ -72,23 +72,23 @@ typedef	struct {
 
 /*  @requires: paut is a valid adress of an automaton structure and s is state_t;
 	@assigns: nothing;
-	@ensures: returns the integer corresponding to the first component of reduit(s) */
-#define automaton_reduit_n(paut,s)        		paut->reduit_n[s]
+	@ensures: returns the integer corresponding to the first component of reduce(s) */
+#define automaton_reduce_n(paut,s)        		paut->reduce_n[s]
 
 /*  @requires: paut is a valid adress of an automaton structure and s is state_t;
 	@assigns: nothing;
-	@ensures: returns the character corresponding to the second component of reduit(s); */
-#define automaton_reduit_c(paut,s)        		paut->reduit_c[s]
+	@ensures: returns the character corresponding to the second component of reduce(s); */
+#define automaton_reduce_c(paut,s)        		paut->reduce_c[s]
 
 /*  @requires: paut is a valid adress of an automaton structure, s is state_t and c is uichar_t;
 	@assigns: nothing;
-	@ensures: returns the state decale(s,c); */
-#define automaton_decale(paut,s,c)        		paut->decale[s*paut->nb_characters+c]
+	@ensures: returns the state shift(s,c); */
+#define automaton_shift(paut,s,c)        		paut->shift[s*paut->nb_characters+c]
 
 /*  @requires: paut is a valid adress of an automaton structure, s is state_t and c is uichar_t;
 	@assigns: nothing;
-	@ensures: returns the state branchement(s, c); */
-#define automaton_branch(paut,s,c)        		paut->branch[s*paut->nb_characters+c]
+	@ensures: returns the state goto(s, c); */
+#define automaton_goto(paut,s,c)        		paut->_goto[s*paut->nb_characters+c]
 
 #endif 
 
