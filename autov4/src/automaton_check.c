@@ -15,7 +15,7 @@ typedef struct {
 #define MAX_HEAP 256
 
 void dumpAutomaton(automaton_t *paut) {
-	int j;
+	state_t j;
 	uichar_t i;
 
 	printf("Automaton [%s], nb_states=%d, nb_characters=%d\n",

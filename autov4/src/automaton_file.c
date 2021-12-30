@@ -92,12 +92,12 @@ automaton_t *loadAutomatonFromFile(char* filename) {
 	}
 
 /* populate reduit_n */
-	result=fread(buffer,reduit_n_size,automaton_nb_states(paut), automaton_file);
+	result=fread(buffer, reduit_n_size, automaton_nb_states(paut), automaton_file);
 	for (j=0; j<automaton_nb_states(paut) ; j++) {
 		for (n=0,k=0; k<reduit_n_size; k++) n+=buffer[j*reduit_n_size+k]<<(8*k);
 		automaton_reduit_n(paut,j)=n;
 	}
-	if (result != paut->nb_states) goto FAIL;
+	if (result != (int) paut->nb_states) goto FAIL;
 	if ((result=fgetc(automaton_file)) != AUT_EOL) goto FAIL;
 
 /* populate reduit_c */
@@ -106,24 +106,24 @@ automaton_t *loadAutomatonFromFile(char* filename) {
 		for (character=0,k=0; k<character_size; k++) character+=buffer[j*character_size+k]<<(8*k);
 		automaton_reduit_c(paut,j)=character;
 	}
-	if (result != paut->nb_states) goto FAIL;
+	if (result != (int) paut->nb_states) goto FAIL;
 	if ((result=fgetc(automaton_file)) != AUT_EOL) goto FAIL;
 
 /* populate decale */
-	while ( fread(&triplet, triplet_size, 1, automaton_file) != 0 ) {
+	while (fread(&triplet, triplet_size, 1, automaton_file) != 0 ) {
 		if (memcmp((char *)&triplet, AUT_END_OF_SEQUENCE, triplet_size) == 0 )  break;
 		for (character=0,k=0; k<triplet_size-2; k++) character+=triplet[1+k]<<(8*k);
 		automaton_decale(paut,triplet[0],character)=triplet[triplet_size-1];
 	}
 
 /* populate branch */
-	while ( fread(&triplet, triplet_size, 1, automaton_file) != 0 ) {
+	while (fread(&triplet, triplet_size, 1, automaton_file) != 0 ) {
 		if (memcmp((char *)&triplet, AUT_END_OF_SEQUENCE, triplet_size) == 0 )  break;
 		for (character=0,k=0; k<triplet_size-2; k++) character+=triplet[1+k]<<(8*k);
 		automaton_branch(paut,triplet[0],character)=triplet[triplet_size-1];
 	}
 
-	for( int j=0; j < automaton_nb_states(paut); j++) {
+	for(j=0; j < automaton_nb_states(paut); j++) {
 		for (i=0; i<automaton_nb_characters(paut); i++) {
                        if (automaton_action(paut,j,i) != 0) {
 				automaton_allowed_character(paut,i)=1;

@@ -94,7 +94,7 @@ uichar_t *ctouic(char *s) {
 	return(ns);
 }
 
-char *uictoc(uichar_t *s) {
+char* uictoc(uichar_t *s) {
 	uichar_t *p;
 	char *ns, *pns;
 
