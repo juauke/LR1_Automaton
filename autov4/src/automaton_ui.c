@@ -1,6 +1,4 @@
-int com_automate_DOT_x() ; /* fileman.c -- A tiny application which demonstrates how to use the
-			      t
-
+/* fileman.c -- A tiny application which demonstrates how to use the
    GNU Readline library.  This application interactively allows users
    to manipulate files and their modes. */
 
@@ -24,8 +22,8 @@ int com_automate_DOT_x() ; /* fileman.c -- A tiny application which demonstrates
 
 automaton_t* paut=NULL;
 
-extern char *getwd();
-extern char *xmalloc();
+extern char* getwd();
+extern char* xmalloc();
 
 /* The names of functions that actually do the manipulation. */
 int com_list(), com_view(), com_rename(), com_stat(), com_pwd();
@@ -56,7 +54,6 @@ COMMAND commands[] = {
 	{ "!ls", com_list, "Synonym for `list'" },
 	{ "!pwd", com_pwd, "Print the current working directory" },
 	{ "!quit", com_quit, "Quit using LR1" },
-	{ "!rename", com_rename, "Rename FILE to NEWNAME" },
 	{ "!stat", com_stat, "Print out statistics on FILE" },
 	{ "!view", com_view, "View the contents of FILE" },
 	{ "!LR1version", com_automaton_version, "Print the current version of LR1 automaton program"},
@@ -65,32 +62,31 @@ COMMAND commands[] = {
 };
 
 /* Forward declarations. */
-char *stripwhite();
-COMMAND *find_command();
+char* stripwhite(char* string);
+COMMAND* find_command(char* name);
 void initialize_readline();
-int execute_line(char*);
-char* command_generator(char *text, int state);
-char** completion_matches(char *text, char *(*entry_func)(char*, int));
-int valid_argument(char *,char *);
-void too_dangerous(char *);
+int execute_line(char* line);
+char* command_generator(char* text, int state);
+char** completion_matches(char* text, char* (*entry_func)(char*, int));
+int valid_argument(char* caller, char* arg);
 
 /* The name of this program, as taken from argv[0]. */
-char *progname;
+char* progname;
 
 /* When non-zero, this global means the user is done using this program. */
 int done;
 
-char* dupstr(char *s) {
-	char *r;
+char* dupstr(char* s) {
+	char* r;
 
-	r = xmalloc(strlen (s) + 1);
+	r = xmalloc(strlen(s) + 1);
 	strcpy(r, s);
 	return r;
 }
 
 #define AUT_FILENAME_MAX 2048
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 	char *line, *s;
 	char prompt[AUT_FILENAME_MAX+20];
 	char historyfile[AUT_FILENAME_MAX+20];
@@ -138,10 +134,10 @@ int main(int argc, char **argv) {
 }
 
 /* Execute a command line. */
-int execute_line (char* line) {
+int execute_line(char* line) {
 	register int i;
-	COMMAND *command;
-	char *word;
+	COMMAND* command;
+	char* word;
 	char c;
 
 	/* Isolate the command word. */
@@ -176,7 +172,7 @@ int execute_line (char* line) {
 
 /* Look up NAME as the name of a command, and return a pointer to that
    command.  Return a NULL pointer if NAME isn't a command name. */
-COMMAND* find_command (char* name) {
+COMMAND* find_command(char* name) {
 	register int i;
 
 	for (i = 0; commands[i].name; i++)
@@ -187,7 +183,7 @@ COMMAND* find_command (char* name) {
 
 /* Strip whitespace from the start and end of STRING.  Return a pointer
    into STRING. */
-char* stripwhite(char *string) {
+char* stripwhite(char* string) {
 	register char *s, *t;
 
 	for (s = string; whitespace(*s); s++);
@@ -225,16 +221,16 @@ void initialize_readline() {
    region of TEXT that contains the word to complete.  We can use the
    entire line in case we want to do some simple parsing.  Return the
    array of matches, or NULL if there aren't any. */
-char** fileman_completion (char *text, int start, int end) {
+char** fileman_completion(char *text, int start, int end) {
 
-	char** matches = (char **) NULL;
+	char** matches = (char**) NULL;
 
 	/* If this word is at the start of the line, then it is a command
 	 to complete.  Otherwise it is the name of a file in the current
 	 directory. */
 	if (end<start) return(NULL);
 
-	if (start == 0) matches = completion_matches (text, command_generator);
+	if (start == 0) matches = completion_matches(text, command_generator);
 
 	return matches;
 }
@@ -242,9 +238,9 @@ char** fileman_completion (char *text, int start, int end) {
 /* Generator function for command completion.  STATE lets us know whether
    to start from scratch; without any state (i.e. STATE == 0), then we
    start at the top of the list. */
-char* command_generator(char *text, int state) {
+char* command_generator(char* text, int state) {
 	static int list_index, len;
-	char *name;
+	char* name;
 
 	/* If this is a new word to complete, initialize now.  This includes
 	 saving the length of TEXT for efficiency, and initializing the index
@@ -259,7 +255,7 @@ char* command_generator(char *text, int state) {
 	}
 
 	/* If no names matched, then return NULL. */
-	return (char *) NULL;
+	return (char*) NULL;
 }
 
 /* **************************************************************** */
@@ -268,8 +264,7 @@ char* command_generator(char *text, int state) {
 /*                                                                  */
 /* **************************************************************** */
 
-/* String to pass to system ().  This is for the LIST, VIEW and RENAME
-   commands. */
+/* String to pass to system ().  This is for the LIST and VIEW commands. */
 static char syscom[2048];
 
 /* List the file(s) named in arg. */
@@ -285,11 +280,6 @@ int com_view(char* arg) {
 
 	sprintf(syscom, "more %s", arg);
 	return system (syscom);
-}
-
-int com_rename(char* arg) {
-	if (arg !=NULL) too_dangerous ("rename");
-	return 0;
 }
 
 int com_stat(char* arg) {
@@ -453,11 +443,6 @@ int com_pwd(char* ignore) {
 int com_quit () {
 	done = 1;
 	return 0;
-}
-
-/* Function which tells you that you can't do this. */
-void too_dangerous(char* caller) {
-	fprintf(stderr, "%s: Too dangerous for me to distribute.  Write it yourself.\n", caller);
 }
 
 /* Return non-zero if ARG is a valid argument for CALLER, else print
