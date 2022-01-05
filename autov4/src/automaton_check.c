@@ -8,6 +8,7 @@
 #include "automaton_color.h"
 #include "automaton_file.h"
 
+/* Maximum size of the stack */
 #define MAX_STACK 0xFFFF
 
 int isword(automaton_t* paut, uichar_t* str) {

@@ -20,6 +20,7 @@
 #include "automaton_DOT.h"
 #include "automaton_check.h"
 
+/* A global to store the automaton structure */
 automaton_t* paut=NULL;
 
 extern char* getwd();

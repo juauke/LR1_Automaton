@@ -18,16 +18,16 @@ void makeCharacterListWithSameAction(automaton_t* paut, boolean_t* printed, int 
 
 	printCharacterDOT(first) ;
 	cur_action=automaton_action(paut,cur_state,first);
-	printed[cur_state*automaton_nb_characters(paut)+first]=1;
+	printed[cur_state*automaton_nb_characters(paut)+first]=1;	/* number of characters already printed */
 	for (i=first+1, prec_same_i=first, nbsame=0 ; i<automaton_nb_characters(paut); i++) {
 		switch(automaton_action(paut,cur_state,i)) {
 			case ACCEPT:
 			case REDUCE:
-				same=((automaton_action(paut,cur_state,i)) == cur_action);
+				same=((automaton_action(paut,cur_state,i)) == cur_action); 		/* equals 1 iff the current and the previous actions are of the same kind */
 
 				break;		
 			case SHIFT:
-				same= ((automaton_action(paut,cur_state,i) == cur_action) &&
+				same= ((automaton_action(paut,cur_state,i) == cur_action) &&	/* equals 1 iff the current and the previous actions are of the same kind and the current state AND the current shift corresponds to the previous shift state */
 					(automaton_shift(paut,cur_state,i) == shift_state)) ;
 				break;		
 			default:
@@ -37,7 +37,7 @@ void makeCharacterListWithSameAction(automaton_t* paut, boolean_t* printed, int 
 		if (prec_same_i == (i-1)) {
 			if (same) nbsame++;
 			else if (nbsame>0) {
-				if (nbsame>1) printf("-") ; else printf(",");
+				if (nbsame>1) printf("-"); else printf(",");	/* prints two characters corresponding to the same action (arrow in the graph) as first,second (example: a,b) and consecutive characters corresponding to the same action as first-last (example: a-c means a,b,c) */
 				printCharacterDOT(prec_same_i) ;
 			}
 		} else {
@@ -47,8 +47,8 @@ void makeCharacterListWithSameAction(automaton_t* paut, boolean_t* printed, int 
 		else nbsame=0;
 	}
 	if (same) {
-		if (nbsame>1) printf("-"); else printf(",");
-		printCharacterDOT(prec_same_i) ;
+		if (nbsame>1) printf("-"); else printf(","); /* prints two characters corresponding to the same action as first,second and consecutive characters corresponding to the same action as first-last */
+		printCharacterDOT(prec_same_i);
 	} 
 }
 
@@ -71,18 +71,18 @@ void DOTaut(automaton_t *paut)  {
 				case REJECT:
 					break;
 				case ACCEPT:
-					printf("   Q%d -> Accepted [ color=green, fontcolor=green, label = \"", j);
+					printf("   Q%d -> Accepted [ color=green, fontcolor=green, label = \"", j); 	/* The action ACCEPT is represented as a green arrow with the corresponding characters on the side and Accepted at its tip */
 					makeCharacterListWithSameAction(paut, alreadyPrinted, i, j,0);
 					printf("\"];\n");
 					break;
 				case SHIFT:
-					printf("   Q%d -> Q%d [ color=black,  fontcolor=black,label = \"", j , automaton_shift(paut,j,i));
+					printf("   Q%d -> Q%d [ color=black,  fontcolor=black,label = \"", j , automaton_shift(paut,j,i)); 		/* The action SHIFT is represented as a black arrow with the corresponding characters on the side */
 					makeCharacterListWithSameAction(paut, alreadyPrinted, i,j,automaton_shift(paut,j,i));
 					printf("\"];\n");
 					break;
 				case REDUCE:
 					printf("   \"(%d, %c)\" [shape=none];\n", automaton_reduce_n(paut,j), automaton_reduce_c(paut,j));
-					printf("   Q%d -> \"(%d, %c)\" [ color=royalblue1, fontcolor=royalblue1, label = \"", j, automaton_reduce_n(paut,j), automaton_reduce_c(paut,j));
+					printf("   Q%d -> \"(%d, %c)\" [ color=royalblue1, fontcolor=royalblue1, label = \"", j, automaton_reduce_n(paut,j), automaton_reduce_c(paut,j));	/* The action REDUCE is represented as a blue arrow with the corresponding characters on the side */
 					makeCharacterListWithSameAction(paut,alreadyPrinted, i, j, 0);
 					printf("\"];\n");
 					break;

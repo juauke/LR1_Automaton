@@ -15,26 +15,26 @@ void dumpAutomaton(automaton_t *paut) {
 	printf("Automaton [%s], nb_states=%d, nb_characters=%d\n",
 			automaton_filename(paut),
 			automaton_nb_states(paut),
-			automaton_nb_characters(paut));
+			automaton_nb_characters(paut)); /* Prints the number of states and the alphabet size of the automaton */
 	printf("========== actions =============\n");
 	for (j=0; j<automaton_nb_states(paut);j++) {
 		printf("%d|",j);
 		for (i=0; i<automaton_nb_characters(paut);i++) {
-			if (automaton_action(paut,j,i) != REJECT) printf("%02x=%0x,",i,automaton_action(paut,j,i));
+			if (automaton_action(paut,j,i) != REJECT) printf("%02x=%0x,",i,automaton_action(paut,j,i)); /* Prints the actions of the automaton */
 		}
 		printf("\n");
 	}
 	printf("========== reduce =============\n");
 	for (j=0; j<automaton_nb_states(paut);j++) {
 		printf("%d|",j);
-		if (automaton_reduce_n(paut,j) != AUTOMATON_UNKNOWN_REDUCE_N) printf("(%d,%02x)",automaton_reduce_n(paut,j),automaton_reduce_c(paut,j));
+		if (automaton_reduce_n(paut,j) != AUTOMATON_UNKNOWN_REDUCE_N) printf("(%d,%02x)",automaton_reduce_n(paut,j),automaton_reduce_c(paut,j)); /* Prints both components of REDUCE of the automaton */
 		printf("\n");
 	}
 	printf("========== shift =============\n");
 	for (j=0; j<automaton_nb_states(paut);j++) {
 		printf("%d|",j);
 		for (i=0; i<automaton_nb_characters(paut);i++) {
-			if (automaton_shift(paut,j,i) != AUTOMATON_UNKNOWN_STATE) printf("%02x=>%02x,",i,automaton_shift(paut,j,i));
+			if (automaton_shift(paut,j,i) != AUTOMATON_UNKNOWN_STATE) printf("%02x=>%02x,",i,automaton_shift(paut,j,i)); /* Prints the SHIFT states of the automaton */
 		}
 		printf("\n");
 	}
@@ -42,7 +42,7 @@ void dumpAutomaton(automaton_t *paut) {
 	for (j=0; j<automaton_nb_states(paut);j++) {
 		printf("%d|",j);
 		for (i=0; i<automaton_nb_characters(paut);i++) {
-			if (automaton_goto(paut,j,i) != AUTOMATON_UNKNOWN_STATE) printf("%02x=>%02x,", i, automaton_goto(paut,j,i));
+			if (automaton_goto(paut,j,i) != AUTOMATON_UNKNOWN_STATE) printf("%02x=>%02x,", i, automaton_goto(paut,j,i)); /* Prints the GOTO states of the automaton */
 		}
 		printf("\n");
 	}

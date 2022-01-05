@@ -9,8 +9,13 @@
 
 #define _AUTO_FILE_H       1
 
+/* End of line character for the automaton */
 #define AUT_EOL			'\n'
+
+/* Header of the automaton */
 #define AUT_HEADER 		"%s %u\n"
+
+/* End of sequence characters for the automaton */
 #define AUT_END_OF_SEQUENCE	"\255\255\255\255\255\255"
 
 /*  @requires: ppaut is a valid adress of a pointer to an automaton structure;

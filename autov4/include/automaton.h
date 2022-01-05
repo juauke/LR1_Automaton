@@ -6,6 +6,7 @@
 #ifndef _AUTO_H
 #define _AUTO_H 1
 
+/* Contains the current version number of the program */
 #define LR1_AUTOMATON_VERSION "V1.0"
 
 /* Contains the current build of the program */
