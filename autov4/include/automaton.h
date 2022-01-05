@@ -6,6 +6,11 @@
 #ifndef _AUTO_H
 #define _AUTO_H 1
 
+#define LR1_AUTOMATON_VERSION "V1.0"
+
+/* Contains the current build of the program */
+#define LR1_AUTOMATON_BUILD LR1_AUTOMATON_VERSION " build on "__DATE__" at "__TIME__""
+
 /* Initialize the states of the tables of shift and goto */
 #define AUTOMATON_UNKNOWN_STATE 	0xFFFFFFFF
 

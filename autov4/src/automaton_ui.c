@@ -30,7 +30,7 @@ extern char *xmalloc();
 /* The names of functions that actually do the manipulation. */
 int com_list(), com_view(), com_rename(), com_stat(), com_pwd();
 int com_load_automaton_from_file(), com_help(), com_cd(), com_quit();
-int com_automaton_DOT(); int com_automaton_DOT_x() ; int com_automaton_isword();
+int com_automaton_DOT(), com_automaton_DOT_x(), com_automaton_isword(), com_automaton_version();
 
 /* A structure which contains information on the commands this program
    can understand. */
@@ -59,6 +59,8 @@ COMMAND commands[] = {
 	{ "!rename", com_rename, "Rename FILE to NEWNAME" },
 	{ "!stat", com_stat, "Print out statistics on FILE" },
 	{ "!view", com_view, "View the contents of FILE" },
+	{ "!LR1version", com_automaton_version, "Print the current version of LR1 automaton program"},
+	{ "!version", com_automaton_version, "Synonym for `LR1version'"},
 	{ (char*) NULL, (int(*)()) NULL, (char*) NULL }
 };
 
@@ -394,6 +396,11 @@ int com_automaton_isword(char* arg) {
 
 	free(ns2);
 	free(ns);
+	return 0;
+}
+
+int com_automaton_version() {
+	printf(LR1_AUTOMATON_BUILD"\n");
 	return 0;
 }
 
