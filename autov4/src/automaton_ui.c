@@ -45,7 +45,7 @@ COMMAND commands[] = {
 	{ "!load", com_load_automaton_from_file, "Load Automate from file" },
 	{ "!loadFile", com_load_automaton_from_file, "Synonym for `load'" },
 	{ "!gDOT", com_automaton_DOT, "Show Automate DOT graph" },
-	{ "!xDOT", com_automaton_DOT_x, "Show Automate DOT graph (graphviz)²" },
+	{ "!xDOT", com_automaton_DOT_x, "Show Automate DOT graph (graphviz)" },
 	{ "!getDOT", com_automaton_DOT, "Synonym for `gDOT'" },
 	{ "!chk", com_automaton_isword, "Check string to automate" },
 	{ "!check", com_automaton_isword, "Synonym for `chk'" },
