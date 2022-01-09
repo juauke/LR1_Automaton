@@ -25,7 +25,7 @@ int isword(automaton_t* paut, uichar_t* str) {
 	ix=0;
 	stack_top=0;
 	stack[stack_top]=0; // initial state = 0
-	while(1) {
+	while(1) { // loop invariant : when the user inputs a "word" to check, during the i-th loop turn, the input has been treated up to the i-th character and the next one falls into one of the actions below
 		
 		if (str[ix] > automaton_nb_characters(paut))		// force REJECT action on unrecognised characters
 			act=REJECT;
