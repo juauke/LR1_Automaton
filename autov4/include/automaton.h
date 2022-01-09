@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h> 
-
 #ifndef _AUTO_H
 #define _AUTO_H 1
 
