@@ -38,13 +38,13 @@ typedef unsigned int uichar_t;
 typedef	struct {
 		state_t			nb_states;
 		uichar_t		nb_characters;
-		char			*filename;
-		boolean_t		*allowed_characters;
-		action_t		*actions;
-		reduce_n_t		*reduce_n;
-		uichar_t		*reduce_c;
-		state_t			*shift;
-		state_t			*_goto;
+		char*			filename;
+		boolean_t*		allowed_characters;
+		action_t*		actions;
+		reduce_n_t*		reduce_n;
+		uichar_t*		reduce_c;
+		state_t*		shift;
+		state_t*		_goto;
 } automaton_t;
 
 /* Macros to get each component of the automaton structure */
