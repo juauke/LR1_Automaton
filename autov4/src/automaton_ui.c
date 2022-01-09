@@ -21,10 +21,15 @@
 #include "automaton_DOT.h"
 #include "automaton_check.h"
 
+
+/* A global to initialize the automaton structure */
 automaton_t* paut=NULL;
 
-extern char* getwd();
-extern char* xmalloc();
+/* The name of this program, as taken from argv[0]. */
+char* progname;
+
+/* When non-zero, this global means the user is done using this program. */
+int done;
 
 COMMAND commands[] = {
 	{ "!cd", com_cd, "	Change to directory DIR" },
@@ -46,12 +51,6 @@ COMMAND commands[] = {
 	{ "!version", com_automaton_version, "Synonym for `LR1version'"},
 	{ (char*) NULL, (int(*)()) NULL, (char*) NULL }
 };
-
-/* The name of this program, as taken from argv[0]. */
-char* progname;
-
-/* When non-zero, this global means the user is done using this program. */
-int done;
 
 char* dupstr(char* s) {
 	char* r;

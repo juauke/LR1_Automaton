@@ -1,6 +1,11 @@
 #ifndef _AUTO_UI_H
 #define _AUTO_UI_H 1
 
+#include "automaton.h"
+
+extern char* getwd();
+extern char* xmalloc();
+
 /* @requires: s is a valid char array;
    @assigns: allocates a char array r;
    @ensures: returns a copy of the char array s;
