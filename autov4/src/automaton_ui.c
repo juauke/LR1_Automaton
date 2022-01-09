@@ -1,4 +1,4 @@
-/* fileman.c -- A tiny application which demonstrates how to use the
+/* Heavily inspired by fileman.c -- A tiny application which demonstrates how to use the
    GNU Readline library.  This application interactively allows users
    to manipulate files and their modes. */
 
@@ -14,31 +14,17 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "automaton_ui.h"
 #include "automaton_uichar.h"
 #include "automaton_file.h"
 #include "automaton_color.h"
 #include "automaton_DOT.h"
 #include "automaton_check.h"
 
-/* A global to store the automaton structure */
 automaton_t* paut=NULL;
 
 extern char* getwd();
 extern char* xmalloc();
-
-/* The names of functions that actually do the manipulation. */
-int com_list(), com_view(), com_rename(), com_stat(), com_pwd();
-int com_load_automaton_from_file(), com_help(), com_cd(), com_quit();
-int com_automaton_DOT(), com_automaton_DOT_x(), com_automaton_isword(), com_automaton_version();
-
-/* A structure which contains information on the commands this program
-   can understand. */
-
-typedef struct {
-	char* name;			/* User printable name of the function. */
-	int (*func)();		/* Function to call to do the job. */
-	char* doc;			/* Documentation for this function.  */
-} COMMAND;
 
 COMMAND commands[] = {
 	{ "!cd", com_cd, "Change to directory DIR" },
@@ -55,21 +41,11 @@ COMMAND commands[] = {
 	{ "!ls", com_list, "Synonym for `list'" },
 	{ "!pwd", com_pwd, "Print the current working directory" },
 	{ "!quit", com_quit, "Quit using LR1" },
-	{ "!stat", com_stat, "Print out statistics on FILE" },
 	{ "!view", com_view, "View the contents of FILE" },
 	{ "!LR1version", com_automaton_version, "Print the current version of LR1 automaton program"},
 	{ "!version", com_automaton_version, "Synonym for `LR1version'"},
 	{ (char*) NULL, (int(*)()) NULL, (char*) NULL }
 };
-
-/* Forward declarations. */
-char* stripwhite(char* string);
-COMMAND* find_command(char* name);
-void initialize_readline();
-int execute_line(char* line);
-char* command_generator(char* text, int state);
-char** completion_matches(char* text, char* (*entry_func)(char*, int));
-int valid_argument(char* caller, char* arg);
 
 /* The name of this program, as taken from argv[0]. */
 char* progname;
@@ -134,7 +110,6 @@ int main(int argc, char** argv) {
 	exit(0);
 }
 
-/* Execute a command line. */
 int execute_line(char* line) {
 	register int i;
 	COMMAND* command;
@@ -171,8 +146,6 @@ int execute_line(char* line) {
 	return ((*(command->func))(word));
 }
 
-/* Look up NAME as the name of a command, and return a pointer to that
-   command.  Return a NULL pointer if NAME isn't a command name. */
 COMMAND* find_command(char* name) {
 	register int i;
 
@@ -204,25 +177,20 @@ char* stripwhite(char* string) {
 /*                                                                  */
 /* **************************************************************** */
 
-char* command_generator();
-char** fileman_completion();
-
-/* Tell the GNU Readline library how to complete.  We want to try to complete
-   on command names if this is the first word in the line, or on filenames
-   if not. */
+/* We want to try to complete on command names if this is
+   the first word in the line, or on filenames if not. */
 void initialize_readline() {
 	/* Allow conditional parsing of the ~/.inputrc file. */
 	rl_readline_name = "LR1";
 
 	/* Tell the completer that we want a crack first. */
-	rl_attempted_completion_function = fileman_completion;
+	rl_attempted_completion_function = (char ** (*)(const char *, int,  int)) fileman_completion;
 }
 
-/* Attempt to complete on the contents of TEXT.  START and END show the
-   region of TEXT that contains the word to complete.  We can use the
-   entire line in case we want to do some simple parsing.  Return the
-   array of matches, or NULL if there aren't any. */
-char** fileman_completion(char *text, int start, int end) {
+/* START and END show the region of TEXT that contains the word to complete.  We can use the
+   entire line in case we want to do some simple parsing.  Return the array 
+   of matches, or NULL if there aren't any; */
+char** fileman_completion(char* text, int start, int end) {
 
 	char** matches = (char**) NULL;
 
@@ -236,9 +204,9 @@ char** fileman_completion(char *text, int start, int end) {
 	return matches;
 }
 
-/* Generator function for command completion.  STATE lets us know whether
-   to start from scratch; without any state (i.e. STATE == 0), then we
-   start at the top of the list. */
+/* state lets us know whether to start from scratch;
+   without any state (i.e. state == 0), then we
+   start at the top of the list; */
 char* command_generator(char* text, int state) {
 	static int list_index, len;
 	char* name;
@@ -246,13 +214,13 @@ char* command_generator(char* text, int state) {
 	/* If this is a new word to complete, initialize now.  This includes
 	 saving the length of TEXT for efficiency, and initializing the index
 	 variable to 0. */
-	if (!state) {list_index = 0; len = strlen (text);}
+	if (!state) {list_index = 0; len = strlen(text);}
 
 	/* Return the next name which partially matches from the command list. */
 	while ((name = commands[list_index].name) != NULL) {
 		list_index++;
 
-		if (strncmp (name, text, len) == 0) return dupstr(name);
+		if (strncmp(name, text, len) == 0) return dupstr(name);
 	}
 
 	/* If no names matched, then return NULL. */
@@ -265,42 +233,23 @@ char* command_generator(char* text, int state) {
 /*                                                                  */
 /* **************************************************************** */
 
-/* String to pass to system ().  This is for the LIST and VIEW commands. */
+/* String to pass to system().  This is for the LIST and VIEW commands. */
 static char syscom[2048];
 
-/* List the file(s) named in arg. */
 int com_list(char* arg) {
 	if (!arg) arg = "";
 
 	sprintf(syscom, "ls -FClg %s", arg);
-	return system (syscom);
+	return system(syscom);
 }
 
 int com_view(char* arg) {
 	if (!valid_argument ("view", arg)) return 1;
 
 	sprintf(syscom, "more %s", arg);
-	return system (syscom);
+	return system(syscom);
 }
 
-int com_stat(char* arg) {
-	struct stat finfo;
-
-	if (!valid_argument("stat", arg)) return 1;
-
-	if (stat (arg, &finfo) == -1) {perror (arg); return 2;}
-
-	printf("Statistics for `%s':\n", arg);
-
-	printf("%s has %d link%s, and is %d byte%s in length.\n", arg, (int)finfo.st_nlink, (finfo.st_nlink == 1) ? "" : "s", (int)finfo.st_size,(finfo.st_size == 1) ? "" : "s");
-	printf("Inode Last Change at: %s", ctime(&finfo.st_ctime));
-	printf("      Last access at: %s", ctime(&finfo.st_atime));
-	printf("    Last modified at: %s", ctime(&finfo.st_mtime));
-	return 0;
-}
-/*  @requires: arg is a valid path to the automaton file;
-	@assigns: allocates the automaton structure;
-	@ensures: initializes the structure with the content of the file */
 int com_load_automaton_from_file(char* arg) {
 	if (paut!=NULL) freeAut(&paut);
 
@@ -314,9 +263,6 @@ int com_load_automaton_from_file(char* arg) {
 	return 0;
 }
 
-/*  @requires: nothing;
-	@assigns: creates a temp graph DOT file and executes a system command;
-	@ensures: opens an X11 window containing the DOT graph of the automaton; */
 int com_automaton_DOT_x() {
 	int oldfd;
 	FILE* temp_stdout;
@@ -336,15 +282,13 @@ int com_automaton_DOT_x() {
 	return system(syscom);
 }
 
-/*  @requires: nothing;
-	@assigns: nothing;
-	@ensures: prints the DOT graph of the automaton; */
 int com_automaton_DOT() {
 	if (paut == NULL) {printf("No automate loaded.\n"); return 1;}
 	
 	DOTaut(paut);
 	return 0;
 }
+
 /*
 char *replaceBackslashN(char *s) {
 	char *p,*p1, *buff;
@@ -365,9 +309,6 @@ char *replaceBackslashN(char *s) {
 }
 */
 
-/*  @requires: arg is a valid array of char;
-	@assigns: nothing;
-	@ensures: prints the result of the analysis of arg by the automaton; */
 int com_automaton_isword(char* arg) {
 	uichar_t *ns, *ns2;
 	int l;
@@ -395,8 +336,6 @@ int com_automaton_version() {
 	return 0;
 }
 
-/* Print out help for ARG, or for all of the commands if ARG is
-   not present. */
 int com_help(char* arg) {
 	register int i;
 	int printed = 0;
@@ -421,7 +360,6 @@ int com_help(char* arg) {
 	return 0;
 }
 
-/* Change to the directory ARG. */
 int com_cd(char* arg) {
 	if (chdir(arg) == -1) {perror(arg); return 1;}
 
@@ -429,7 +367,6 @@ int com_cd(char* arg) {
 	return 0;
 }
 
-/* Print out the current working directory. */
 int com_pwd(char* ignore) {
 	char dir[1024], *s;
 
@@ -440,15 +377,12 @@ int com_pwd(char* ignore) {
 	return 0;
 }
 
-/* The user wishes to quit using this program.  Just set DONE non-zero. */
-int com_quit () {
+int com_quit() {
 	done = 1;
 	return 0;
 }
 
-/* Return non-zero if ARG is a valid argument for CALLER, else print
-   an error message and return zero. */
 int valid_argument(char* caller, char* arg) {
-	if (!arg || !*arg) {fprintf(stderr, "%s: Argument required.\n", caller); return 0;}
-	return 1;
+	if (!arg || !*arg) {fprintf(stderr, "%s: Argument required.\n", caller); return FALSE;}
+	return TRUE;
 }

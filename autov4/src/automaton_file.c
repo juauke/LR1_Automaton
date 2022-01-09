@@ -48,7 +48,9 @@ void dumpAutomaton(automaton_t *paut) {
 	}
 }
 
-
+/*  @requires: ppaut is a valid pointer to a pointer to an automaton type;
+	@assigns: nothing;
+	@ensures: frees all allocated elements corresponding to the automaton; */
 void freeAut(automaton_t **ppaut) {
 	if  (*ppaut != NULL) {
 		if ((*ppaut)->_goto					!= NULL) free((*ppaut)->_goto);
